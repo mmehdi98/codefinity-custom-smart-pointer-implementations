@@ -16,7 +16,8 @@ public:
     const T* operator ->() const;
 
     const T* get () const;
-    
+    void reset(T* newPtr = nullptr);
+    T* release();
 
 private:
     T* ptr_;
@@ -67,4 +68,19 @@ const T* UniquePtr<T>::operator->() const{
 template <typename T>
 const T* UniquePtr<T>::get() const{
     return ptr_;
+}
+
+template <typename T>
+void UniquePtr<T>::reset(T* newPtr){
+    if (ptr_ != newPtr){
+        delete ptr_;
+        ptr_ = newPtr;
+    }
+}
+
+template <typename T>
+T* UniquePtr<T>::release(){
+    T* temp = ptr_;
+    ptr_ = nullptr;
+    return temp;
 }
