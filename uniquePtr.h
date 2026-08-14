@@ -3,6 +3,7 @@
 template <typename T>
 class UniquePtr{
 public:
+    UniquePtr();
     explicit UniquePtr(T* ptr);
     UniquePtr(const UniquePtr& other) = delete;
     UniquePtr(UniquePtr&& other) noexcept;
@@ -14,14 +15,18 @@ public:
     const T& operator *() const;
     T* operator ->();
     const T* operator ->() const;
+    explicit operator bool() const noexcept;
 
-    const T* get () const;
+    T* get () const;
     void reset(T* newPtr = nullptr);
     T* release();
 
 private:
     T* ptr_;
 };
+
+template <typename T>
+UniquePtr<T>::UniquePtr() :ptr_(nullptr){}
 
 template <typename T>
 UniquePtr<T>::UniquePtr(T* ptr) :ptr_(ptr){}
@@ -66,7 +71,12 @@ const T* UniquePtr<T>::operator->() const{
 }
 
 template <typename T>
-const T* UniquePtr<T>::get() const{
+UniquePtr<T>::operator bool() const noexcept{
+    return ptr_!=nullptr;
+}
+
+template <typename T>
+T* UniquePtr<T>::get() const{
     return ptr_;
 }
 
